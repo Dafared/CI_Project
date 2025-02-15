@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Database Search Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #333;
+    }
+    .search-container {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    #search-input {
+      width: 70%;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #search-type {
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #results {
+      border-top: 1px solid #ddd;
+      padding-top: 20px;
+    }
+    .result-item {
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+    .autocomplete-items {
+      position: absolute;
+      border: 1px solid #d4d4d4;
+      border-bottom: none;
+      border-top: none;
+      z-index: 99;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: #fff;
+    }
+    .autocomplete-items div {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #d4d4d4;
+    }
+    .autocomplete-items div:hover {
+      background-color: #e9e9e9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Movie Database Search Test</h1>
+  <div class="search-container">
+    <div class="autocomplete" style="width:300px;">
+      <input type="text" id="search-input" placeholder="Enter actor, movie or director name">
+    </div>
+    <select id="search-type">
+      <option value="actor">Actor</option>
+      <option value="movie">Movie</option>
+      <option value="director">Director</option>
+    </select>
+    <button id="search-button">Search</button>
+    <button id="import-button">Import Data</button>
+    <button id="bulk-import-button">Bulk Import</button>
+    <button id="clear-button">Clear DB</button>
+  </div>
+  <div id="results"></div>
+
+  <script>
+    // 获取页面元素
+    const searchInput = document.getElementById('search-input');
+    const searchType = document.getElementById('search-type');
+    const searchButton = document.getElementById('search-button');
+    const importButton = document.getElementById('import-button');
+    const bulkImportButton = document.getElementById('bulk-import-button');
+    const clearButton = document.getElementById('clear-button');
+    const resultsContainer = document.getElementById('results');
+
+    // API_BASE_URL为空字符串表示使用相对路径（同一域名下）
+    const API_BASE_URL = '';
+
+    // 绑定按钮点击事件
+    searchButton.addEventListener('click', performSearch);
+    importButton.addEventListener('click', performImport);
+    bulkImportButton.addEventListener('click', performBulkImport);
+    clearButton.addEventListener('click', performClear);
+
+    // 自动完成功能：当用户输入时获取建议（此处为可选功能）
+    searchInput.addEventListener('input', debounce(handleAutocomplete, 300));
+
+    // 防抖函数，避免频繁调用
+    function debounce(func, delay) {
+      let debounceTimer;
+      return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => func.apply(context, args), delay);
+      }
+    }
+
+    async function handleAutocomplete() {
+      const query = searchInput.value.trim();
+      const type = searchType.value;
+      if (query.length < 2) {
+        closeAllLists();
+        return;
+      }
+      try {
+        const response = await fetch(`${API_BASE_URL}/autocomplete/${type}?query=${encodeURIComponent(query)}`);
+        const suggestions = await response.json();
+        
+        let autocompleteList = document.getElementById(searchInput.id + "autocomplete-list");
+        if (!autocompleteList) {
+          autocompleteList = document.createElement("DIV");
+          autocompleteList.setAttribute("id", searchInput.id + "autocomplete-list");
+          autocompleteList.setAttribute("class", "autocomplete-items");
+          searchInput.parentNode.appendChild(autocompleteList);
+        }
+        autocompleteList.innerHTML = '';
+        suggestions.forEach(suggestion => {
+          const suggestionElement = document.createElement("DIV");
+          suggestionElement.innerText = suggestion;
+          suggestionElement.addEventListener("click", function() {
+            searchInput.value = this.innerText;
+            closeAllLists();
+          });
+          autocompleteList.appendChild(suggestionElement);
+        });
+      } catch (error) {
+        console.error('Error fetching autocomplete suggestions:', error);
+      }
+    }
+
+    function closeAllLists(elmnt) {
+      const items = document.getElementsByClassName("autocomplete-items");
+      for (let i = 0; i < items.length; i++) {
+        if (elmnt != items[i] && elmnt != searchInput) {
+          items[i].parentNode.removeChild(items[i]);
+        }
+      }
+    }
+    
+    document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+    });
+
+    // performImport 调用 /import API
+    async function performImport() {
+      resultsContainer.innerHTML = 'Importing data...';
+      try {
+        const response = await fetch(`${API_BASE_URL}/import`, { method: 'POST' });
+        const data = await response.json();
+        if (response.ok) {
+          resultsContainer.innerHTML = `<p>${data.message}</p>`;
+        } else {
+          resultsContainer.innerHTML = `<p>Error: ${data.detail || 'Something went wrong'}</p>`;
+        }
+      } catch (error) {
+        resultsContainer.innerHTML = `<p>Error: ${error.message}</p>`;
+      }
+    }
+
+    // performBulkImport 调用 /bulk_import API
+    async function performBulkImport() {
+      resultsContainer.innerHTML = 'Bulk importing data...';
+      try {
+        const response = await fetch(`${API_BASE_URL}/bulk_import`, { method: 'POST' });
+        const data = await response.json();
+        if (response.ok) {
+          resultsContainer.innerHTML = `<p>${data.message}</p>`;
+        } else {
+          resultsContainer.innerHTML = `<p>Error: ${data.detail || 'Something went wrong'}</p>`;
+        }
+      } catch (error) {
+        resultsContainer.innerHTML = `<p>Error: ${error.message}</p>`;
+      }
+    }
+
+    // performClear 调用 /clear API
+    async function performClear() {
+      resultsContainer.innerHTML = 'Clearing database...';
+      try {
+        const response = await fetch(`${API_BASE_URL}/clear`, { method: 'POST' });
+        const data = await response.json();
+        if (response.ok) {
+          resultsContainer.innerHTML = `<p>${data.message}</p>`;
+        } else {
+          resultsContainer.innerHTML = `<p>Error: ${data.detail || 'Something went wrong'}</p>`;
+        }
+      } catch (error) {
+        resultsContainer.innerHTML = `<p>Error: ${error.message}</p>`;
+      }
+    }
+
+    async function fetchWithTimeout(url, timeout = 10000) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeout);
+      try {
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(id);
+        return response;
+      } catch (error) {
+        clearTimeout(id);
+        throw error;
+      }
+    }
+
+    // 根据搜索类型调用后端对应的接口，并显示结果
+    async function performSearch() {
+      const query = searchInput.value.trim();
+      const type = searchType.value;
+      if (!query) {
+        alert('Please enter a search query');
+        return;
+      }
+      resultsContainer.innerHTML = 'Searching...';
+      
+      const formattedQuery = query;
+      let combinedData = null;
+
+      try {
+        if (type === "actor") {
+          const [filmographyResponse, directorsResponse] = await Promise.all([
+            fetchWithTimeout(`${API_BASE_URL}/actors/${encodeURIComponent(formattedQuery)}/filmography`),
+            fetchWithTimeout(`${API_BASE_URL}/actors/${encodeURIComponent(formattedQuery)}/directors`)
+          ]);
+          
+          if (filmographyResponse.status === 404 || directorsResponse.status === 404) {
+            resultsContainer.innerHTML = `<p>No results found for actor: ${formattedQuery}</p>`;
+            return;
+          }
+          if (!filmographyResponse.ok || !directorsResponse.ok) {
+            throw new Error("Search failed");
+          }
+          const filmographyData = await filmographyResponse.json();
+          const directorsData = await directorsResponse.json();
+          combinedData = { ...filmographyData, directors: directorsData.directors };
+        } else if (type === "movie") {
+          const [castResponse, directorsResponse] = await Promise.all([
+            fetch(`${API_BASE_URL}/movies/${encodeURIComponent(formattedQuery)}/cast`),
+            fetch(`${API_BASE_URL}/movies/${encodeURIComponent(formattedQuery)}/directors`)
+          ]);
+          
+          if (castResponse.status === 404 || directorsResponse.status === 404) {
+            resultsContainer.innerHTML = `<p>No results found for movie: ${formattedQuery}</p>`;
+            return;
+          }
+          if (!castResponse.ok || !directorsResponse.ok) {
+            throw new Error("Search failed");
+          }
+          const castData = await castResponse.json();
+          const directorsData = await directorsResponse.json();
+          combinedData = { ...castData, directors: directorsData.directors };
+        } else if (type === "director") {
+          const [filmographyResponse, actorsResponse] = await Promise.all([
+            fetch(`${API_BASE_URL}/directors/${encodeURIComponent(formattedQuery)}/filmography`),
+            fetch(`${API_BASE_URL}/directors/${encodeURIComponent(formattedQuery)}/actors`)
+          ]);
+          
+          if (filmographyResponse.status === 404 || actorsResponse.status === 404) {
+            resultsContainer.innerHTML = `<p>No results found for director: ${formattedQuery}</p>`;
+            return;
+          }
+          if (!filmographyResponse.ok || !actorsResponse.ok) {
+            throw new Error("Search failed");
+          }
+          const filmographyData = await filmographyResponse.json();
+          const actorsData = await actorsResponse.json();
+          combinedData = { ...filmographyData, actors: actorsData.actors };
+        }
+
+        if (!combinedData) {
+          resultsContainer.innerHTML = `<p>No results found for ${type}: ${formattedQuery}</p>`;
+        } else {
+          displayResults(combinedData, type);
+        }
+      } catch (error) {
+        resultsContainer.innerHTML = `<p>Error: ${error.message}</p>`;
+      }
+    }
+
+    // 根据不同类型展示搜索结果
+    function displayResults(data, type) {
+      resultsContainer.innerHTML = '';
+      if (type === 'actor') {
+        const actorDiv = document.createElement('div');
+        actorDiv.className = 'result-item';
+        actorDiv.innerHTML = `<h3>Actor: ${data.actor.name}</h3>
+                              <p>Photo: ${data.actor.photo_path || 'N/A'}</p>`;
+        resultsContainer.appendChild(actorDiv);
+        if (data.movies && data.movies.length > 0) {
+          const filmographyDiv = document.createElement('div');
+          filmographyDiv.innerHTML = '<h3>Filmography:</h3>';
+          data.movies.forEach(movie => {
+            const movieItem = document.createElement('div');
+            movieItem.className = 'result-item';
+            movieItem.innerHTML = `<p><strong>${movie.title}</strong> (${movie.release_date || 'N/A'})</p>`;
+            filmographyDiv.appendChild(movieItem);
+          });
+          resultsContainer.appendChild(filmographyDiv);
+        }
+        if (data.directors && data.directors.length > 0) {
+          const directorsDiv = document.createElement('div');
+          directorsDiv.innerHTML = '<h3>Collaborating Directors:</h3>';
+          data.directors.forEach(director => {
+            const directorItem = document.createElement('div');
+            directorItem.className = 'result-item';
+            directorItem.innerHTML = `<p><strong>${director.name}</strong> (Photo: ${director.photo_path || 'N/A'})</p>`;
+            directorsDiv.appendChild(directorItem);
+          });
+          resultsContainer.appendChild(directorsDiv);
+        }
+      } else if (type === 'movie') {
+        const movieDiv = document.createElement('div');
+        movieDiv.className = 'result-item';
+        movieDiv.innerHTML = `<h3>Movie: ${data.movie.title}</h3>
+                              <p>Release Date: ${data.movie.release_date || 'N/A'}</p>
+                              <p>English Title: ${data.movie.english_title || 'N/A'}</p>
+                              <p>Genres: ${data.movie.genres ? data.movie.genres.join(', ') : 'N/A'}</p>
+                              <p>Cover: ${data.movie.cover_path || 'N/A'}</p>`;
+        resultsContainer.appendChild(movieDiv);
+        if (data.actors && data.actors.length > 0) {
+          const castDiv = document.createElement('div');
+          castDiv.innerHTML = '<h3>Cast:</h3>';
+          data.actors.forEach(actor => {
+            const actorItem = document.createElement('div');
+            actorItem.className = 'result-item';
+            actorItem.innerHTML = `<p><strong>${actor.name}</strong> (Photo: ${actor.photo_path || 'N/A'})</p>`;
+            castDiv.appendChild(actorItem);
+          });
+          resultsContainer.appendChild(castDiv);
+        }
+        if (data.directors && data.directors.length > 0) {
+          const directorsDiv = document.createElement('div');
+          directorsDiv.innerHTML = '<h3>Directors:</h3>';
+          data.directors.forEach(director => {
+            const directorItem = document.createElement('div');
+            directorItem.className = 'result-item';
+            directorItem.innerHTML = `<p><strong>${director.name}</strong> (Photo: ${director.photo_path || 'N/A'})</p>`;
+            directorsDiv.appendChild(directorItem);
+          });
+          resultsContainer.appendChild(directorsDiv);
+        }
+      } else if (type === 'director') {
+        const directorDiv = document.createElement('div');
+        directorDiv.className = 'result-item';
+        directorDiv.innerHTML = `<h3>Director: ${data.director.name}</h3>
+                                 <p>Photo: ${data.director.photo_path || 'N/A'}</p>`;
+        resultsContainer.appendChild(directorDiv);
+        if (data.movies && data.movies.length > 0) {
+          const filmographyDiv = document.createElement('div');
+          filmographyDiv.innerHTML = '<h3>Filmography:</h3>';
+          data.movies.forEach(movie => {
+            const movieItem = document.createElement('div');
+            movieItem.className = 'result-item';
+            movieItem.innerHTML = `<p><strong>${movie.title}</strong> (${movie.release_date || 'N/A'})</p>`;
+            filmographyDiv.appendChild(movieItem);
+          });
+          resultsContainer.appendChild(filmographyDiv);
+        }
+        if (data.actors && data.actors.length > 0) {
+          const actorsDiv = document.createElement('div');
+          actorsDiv.innerHTML = '<h3>Collaborating Actors:</h3>';
+          data.actors.forEach(actor => {
+            const actorItem = document.createElement('div');
+            actorItem.className = 'result-item';
+            actorItem.innerHTML = `<p><strong>${actor.name}</strong> (Photo: ${actor.photo_path || 'N/A'})</p>`;
+            actorsDiv.appendChild(actorItem);
+          });
+          resultsContainer.appendChild(actorsDiv);
+        }
+      }
+    }
+  </script>
+</body>
+</html>

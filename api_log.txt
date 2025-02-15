@@ -1,0 +1,64 @@
+2025-02-12 17:47:25,208 - ERROR - Error importing CSV data: [Statement.SemanticError] Cannot merge the following node because of null property value for 'title': (:Movie {title: null})
+2025-02-12 17:49:07,450 - ERROR - Error importing CSV data: [Statement.SemanticError] Cannot merge the following node because of null property value for 'title': (:Movie {title: null})
+2025-02-12 17:49:08,773 - ERROR - Error importing CSV data: [Statement.SemanticError] Cannot merge the following node because of null property value for 'title': (:Movie {title: null})
+2025-02-12 17:49:09,290 - ERROR - Error importing CSV data: [Statement.SemanticError] Cannot merge the following node because of null property value for 'title': (:Movie {title: null})
+2025-02-12 17:51:22,286 - ERROR - Error importing CSV data: cannot access local variable 'title' where it is not associated with a value
+2025-02-12 17:52:23,391 - ERROR - Error importing CSV data: [Statement.SemanticError] Cannot merge the following node because of null property value for 'title': (:Movie {title: null})
+2025-02-13 11:39:02,595 - ERROR - Error in bulk import: [Procedure.ProcedureNotFound] There is no procedure with the name `apoc.load.csv` registered for this database instance. Please ensure you've spelled the procedure name correctly and that the procedure is properly deployed.
+2025-02-13 12:19:10,147 - ERROR - Error in bulk import: [Procedure.ProcedureNotFound] There is no procedure with the name `apoc.load.csv` registered for this database instance. Please ensure you've spelled the procedure name correctly and that the procedure is properly deployed.
+2025-02-13 12:19:12,560 - ERROR - Error in bulk import: [Procedure.ProcedureNotFound] There is no procedure with the name `apoc.load.csv` registered for this database instance. Please ensure you've spelled the procedure name correctly and that the procedure is properly deployed.
+2025-02-13 12:24:04,754 - ERROR - Error in bulk import: [Procedure.ProcedureNotFound] There is no procedure with the name `apoc.load.csv` registered for this database instance. Please ensure you've spelled the procedure name correctly and that the procedure is properly deployed.
+2025-02-13 12:42:57,819 - ERROR - Error in bulk import: [Procedure.ProcedureNotFound] There is no procedure with the name `apoc.load.csv` registered for this database instance. Please ensure you've spelled the procedure name correctly and that the procedure is properly deployed.
+2025-02-13 12:44:32,420 - ERROR - Error in bulk import: [Statement.SyntaxError] Unknown procedure output: `lineNumber` (line 2, column 52 (offset: 52))
+"        CALL apoc.load.csv($url) YIELD map AS row, lineNumber AS line"
+                                                    ^
+2025-02-13 12:46:28,425 - ERROR - Error in bulk import: [Statement.SyntaxError] Unknown procedure output: `lineNumber` (line 2, column 78 (offset: 78))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) YIELD map AS row, lineNumber AS line"
+                                                                              ^
+2025-02-13 12:46:29,693 - ERROR - Error in bulk import: [Statement.SyntaxError] Unknown procedure output: `lineNumber` (line 2, column 78 (offset: 78))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) YIELD map AS row, lineNumber AS line"
+                                                                              ^
+2025-02-13 12:46:30,217 - ERROR - Error in bulk import: [Statement.SyntaxError] Unknown procedure output: `lineNumber` (line 2, column 78 (offset: 78))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) YIELD map AS row, lineNumber AS line"
+                                                                              ^
+2025-02-13 12:47:29,536 - ERROR - Error in bulk import: [Statement.SyntaxError] Unknown procedure output: `lineNumber` (line 2, column 78 (offset: 78))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) YIELD map AS row, lineNumber AS line"
+                                                                              ^
+2025-02-13 12:48:30,538 - ERROR - Error in bulk import: [Statement.SyntaxError] Unknown procedure output: `lineNumber` (line 2, column 78 (offset: 78))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) YIELD map AS row, lineNumber AS line"
+                                                                              ^
+2025-02-13 12:48:31,299 - ERROR - Error in bulk import: [Statement.SyntaxError] Unknown procedure output: `lineNumber` (line 2, column 78 (offset: 78))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) YIELD map AS row, lineNumber AS line"
+                                                                              ^
+2025-02-13 12:48:31,743 - ERROR - Error in bulk import: [Statement.SyntaxError] Unknown procedure output: `lineNumber` (line 2, column 78 (offset: 78))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) YIELD map AS row, lineNumber AS line"
+                                                                              ^
+2025-02-13 12:48:31,949 - ERROR - Error in bulk import: [Statement.SyntaxError] Unknown procedure output: `lineNumber` (line 2, column 78 (offset: 78))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) YIELD map AS row, lineNumber AS line"
+                                                                              ^
+2025-02-13 12:55:18,664 - ERROR - Error in bulk import: [Procedure.ProcedureCallFailed] Failed to invoke procedure `apoc.load.csv`: Caused by: java.lang.RuntimeException: Import from files not enabled, please set apoc.import.file.enabled=true in your apoc.conf
+2025-02-13 12:56:35,130 - ERROR - Error in bulk import: [Procedure.ProcedureCallFailed] Failed to invoke procedure `apoc.load.csv`: Caused by: java.lang.RuntimeException: Import from files not enabled, please set apoc.import.file.enabled=true in your apoc.conf
+2025-02-13 15:31:58,706 - ERROR - Error in bulk import: [Statement.SyntaxError] Invalid input 'FROM': expected an expression, 'FOREACH', ',', 'AS', 'ORDER BY', 'CALL', 'CREATE', 'LOAD CSV', 'DELETE', 'DETACH', 'FINISH', 'INSERT', 'LIMIT', 'MATCH', 'MERGE', 'NODETACH', 'OFFSET', 'OPTIONAL', 'REMOVE', 'RETURN', 'SET', 'SKIP', 'UNION', 'UNWIND', 'USE', 'WHERE', 'WITH' or <EOF> (line 2, column 73 (offset: 73))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) WITH HEADERS FROM"
+                                                                         ^
+2025-02-13 15:32:46,162 - ERROR - Error in bulk import: [Statement.SyntaxError] Invalid input 'YIELD': expected an expression, 'FOREACH', ',', 'AS', 'ORDER BY', 'CALL', 'CREATE', 'LOAD CSV', 'DELETE', 'DETACH', 'FINISH', 'INSERT', 'LIMIT', 'MATCH', 'MERGE', 'NODETACH', 'OFFSET', 'OPTIONAL', 'REMOVE', 'RETURN', 'SET', 'SKIP', 'UNION', 'UNWIND', 'USE', 'WHERE', 'WITH' or <EOF> (line 2, column 73 (offset: 73))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) WITH HEADERS YIELD map AS row, linenumber() AS line"
+                                                                         ^
+2025-02-13 15:33:17,124 - ERROR - Error in bulk import: [Statement.SyntaxError] Invalid input '(': expected 'FOREACH', ',', 'AS', 'ORDER BY', 'CALL', 'CREATE', 'LOAD CSV', 'DELETE', 'DETACH', 'FINISH', 'INSERT', 'LIMIT', 'MATCH', 'MERGE', 'NODETACH', 'OFFSET', 'OPTIONAL', 'REMOVE', 'RETURN', 'SET', 'SKIP', 'UNION', 'UNWIND', 'USE', 'WHERE', 'WITH' or <EOF> (line 2, column 88 (offset: 88))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) YIELD map AS row, linenumber() AS line"
+                                                                                        ^
+2025-02-13 15:33:18,233 - ERROR - Error in bulk import: [Statement.SyntaxError] Invalid input '(': expected 'FOREACH', ',', 'AS', 'ORDER BY', 'CALL', 'CREATE', 'LOAD CSV', 'DELETE', 'DETACH', 'FINISH', 'INSERT', 'LIMIT', 'MATCH', 'MERGE', 'NODETACH', 'OFFSET', 'OPTIONAL', 'REMOVE', 'RETURN', 'SET', 'SKIP', 'UNION', 'UNWIND', 'USE', 'WHERE', 'WITH' or <EOF> (line 2, column 88 (offset: 88))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) YIELD map AS row, linenumber() AS line"
+                                                                                        ^
+2025-02-13 15:33:18,766 - ERROR - Error in bulk import: [Statement.SyntaxError] Invalid input '(': expected 'FOREACH', ',', 'AS', 'ORDER BY', 'CALL', 'CREATE', 'LOAD CSV', 'DELETE', 'DETACH', 'FINISH', 'INSERT', 'LIMIT', 'MATCH', 'MERGE', 'NODETACH', 'OFFSET', 'OPTIONAL', 'REMOVE', 'RETURN', 'SET', 'SKIP', 'UNION', 'UNWIND', 'USE', 'WHERE', 'WITH' or <EOF> (line 2, column 88 (offset: 88))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) YIELD map AS row, linenumber() AS line"
+                                                                                        ^
+2025-02-13 15:33:19,074 - ERROR - Error in bulk import: [Statement.SyntaxError] Invalid input '(': expected 'FOREACH', ',', 'AS', 'ORDER BY', 'CALL', 'CREATE', 'LOAD CSV', 'DELETE', 'DETACH', 'FINISH', 'INSERT', 'LIMIT', 'MATCH', 'MERGE', 'NODETACH', 'OFFSET', 'OPTIONAL', 'REMOVE', 'RETURN', 'SET', 'SKIP', 'UNION', 'UNWIND', 'USE', 'WHERE', 'WITH' or <EOF> (line 2, column 88 (offset: 88))
+"        CALL apoc.load.csv($url, {includeLineNumber:true}) YIELD map AS row, linenumber() AS line"
+                                                                                        ^
+2025-02-14 20:19:35,014 - ERROR - Error in bulk import: [Statement.SyntaxError] The PERIODIC COMMIT query hint is no longer supported. Please use CALL { ... } IN TRANSACTIONS instead. (line 2, column 15 (offset: 15))
+"        USING PERIODIC COMMIT 500"
+               ^
+2025-02-14 20:22:54,557 - ERROR - Error in bulk import: [Statement.SyntaxError] Query cannot conclude with CALL (must be a RETURN clause, a FINISH clause, an update clause, a unit subquery call, or a procedure call with no YIELD). (line 2, column 9 (offset: 9))
+"        CALL {"
+         ^
