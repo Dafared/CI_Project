@@ -77,9 +77,9 @@ async def import_data():
         graph.run("MATCH (n) DETACH DELETE n")
 
         # 定义 CSV 文件和图片文件夹路径（根据实际情况调整）
-        movie_csv = "Data/movies.csv"
-        actor_csv = "Data/actors.csv"
-        director_csv = "Data/directors.csv"
+        movie_csv = "../Data/movies.csv"
+        actor_csv = "../Data/actors.csv"
+        director_csv = "../Data/directors.csv"
         movie_cover_folder = "/Data/movie_covers"
         actor_photo_folder = "/Data/actor_photos"
         director_photo_folder = "/Data/director_photos"
